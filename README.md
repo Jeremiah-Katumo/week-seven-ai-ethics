@@ -1,0 +1,1 @@
+https://www.kaggle.com/datasets/atahmasb/amazon-job-skills
