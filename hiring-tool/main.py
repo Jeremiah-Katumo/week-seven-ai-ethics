@@ -127,7 +127,7 @@ if uploaded_file is not None and evaluate_model:
 
         # Train/test split
         X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=42)
-        title_model = LogisticRegression(solver='liblinear', multi_class='ovr', max_iter=1000)
+        title_model = LogisticRegression(max_iter=1000, solver='lbfgs')
         title_model.fit(X_train, y_train)
     else:
         title_model = None
@@ -149,13 +149,13 @@ if uploaded_file is not None and evaluate_model:
             st.markdown(f"Fairness Analysis for {attr}")
             
             X = data.drop(columns=[attr, 'Title']) # Assuming 'hired' is the label column or target column
-            y = data[attr]
+            y = data['Title']
             
             X_train, X_test, y_train, y_test, s_train, s_test = train_test_split(X, y, test_size=0.3, random_state=42)
             
             base_model = None
             if model_type == "Logistic Regression":
-                base_model = LogisticRegression(solver='liblinear')
+                base_model = LogisticRegression(solver='lbfgs', max_iter=1000)
             elif model_type == "Decision Tree":
                 base_model = DecisionTreeClassifier(criterion='entropy', splitter='best', max_depth=10, random_state=42)
             elif model_type == "Random Forest":
@@ -266,7 +266,7 @@ if uploaded_file is not None and evaluate_model:
                 pdf_buffer = io.BytesIO()
                 pdf_canvas = canvas.Canvas(pdf_buffer)
                 y_pos = 800  # or another suitable value
-                pdf_canvas.drawString(100, 800, "Fairness Analysis Report")
+                pdf_canvas.drawString(100, y_pos, "Fairness Analysis Report")
                 y_pos -= 30
                 for attr in selected_feature_attrs:
                     pdf_canvas.drawString(100, y_pos, f"Protected Feature Attributes: {attr}")
